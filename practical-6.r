@@ -1,6 +1,8 @@
-library(dplyr)
 library(ggplot2)
-titanic <- read_csv("titanic.csv")
+library(dplyr)
+library(tidyr)
+library(readr)
+titanic <- read.csv("titanic.csv")
 titanic <- titanic |>
 mutate(survived = as.logical(survived))
 
@@ -13,3 +15,15 @@ ggplot(titanic, aes(x = survived, y = age)) +
     x = "Survived",
     y = "Age"
   )
+
+model_binary <- glm(
+  survived ~ pclass + sex + age + accompanied,
+  data = titanic,
+  family = binomial(link = "logit")
+)
+
+summary(model_binary)
+
+ggplot(titanic, aes(x = survived)) +
+  geom_bar() +
+  facet_grid(pclass ~ sex)
